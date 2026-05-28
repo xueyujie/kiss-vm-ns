@@ -1730,7 +1730,7 @@ install_requires() {
 		;;
 	debian*|ubuntu*)
 		qemukvm=qemu-kvm
-		[[ "$ID" = ubuntu ]] && { a=$(uname -m); case $a in (x86_64) a=x86;; esac; qemukvm=qemu-system-$a; }
+		[[ "$ID" = ubuntu ]] && { a=$(uname -m); case $a in (x86_64) a=x86;; (aarch64) a=arm;; esac; qemukvm=qemu-system-$a; }
 		pkglist="bash-completion libnss-libvirt libvirt-clients libvirt-daemon libvirt-daemon-system $qemukvm dnsmasq virtinst virt-viewer util-linux-extra expect nmap ncat tmux libguestfs-tools dialog qemu-utils udisks2 genisoimage nftables acl ipcalc-ng socat"
 		recommend_pkglist="swtpm-tools ovmf"
 

@@ -2824,9 +2824,13 @@ else
 			VIRT_CPU_OPT=--cpu=${_cpu// /}
 		fi
 		;;
-	(s390x|ppc*|loongarch*)
+	(s390x|ppc*)
 		#qemu-system-s390x doesn't support --video=sql on fedora-35
 		[[ -z "$SPECIFIED_VIDEO" ]] && VIDEO_OPT="--video=virtio"
+		;;
+	(loongarch*)
+		#seems --video=virtio doesn't work on fedora-44/qemu-system-loongarch64
+		[[ -z "$SPECIFIED_VIDEO" ]] && VIDEO_OPT="--video=vga"
 		;;
 	(riscv*)
 		[[ -z "$MACHINE_OPT" ]] && { MACHINE_OPT="--machine=virt"; MACHINE_QEMUOPT="-machine virt"; }
@@ -2850,9 +2854,10 @@ case "$GuestARCH" in
 	_MSIZE=2048M
 	;;
 (loongarch*)
-	edk2path=/usr/share/edk2/loongarch64  #require pkg: edk2-loongarch64.noarch
-	BOOT_OPTS+=(--boot=loader=$edk2path/QEMU_EFI.fd,nvram=$edk2path/QEMU_VARS.fd)
-	QEMU_OPTS+=('--qemu-commandline=-device nec-usb-xhci,id=xhci,addr=0x1b -device usb-tablet,id=tablet,bus=xhci.0,port=1 -device usb-kbd,id=keyboard,bus=xhci.0,port=2')
+	#latest virt-install/manager has included loongarch64 support, comment follow hacking code
+	#edk2path=/usr/share/edk2/loongarch64  #require pkg: edk2-loongarch64.noarch
+	#BOOT_OPTS+=(--boot=loader=$edk2path/QEMU_EFI.fd,nvram=$edk2path/QEMU_VARS.fd)
+	#QEMU_OPTS+=('--qemu-commandline=-device nec-usb-xhci,id=xhci,addr=0x1b -device usb-tablet,id=tablet,bus=xhci.0,port=1 -device usb-kbd,id=keyboard,bus=xhci.0,port=2')
 	CDROM_BUS_TYPE=usb
 	CDROM_BUS_TYPE=scsi
 	;;

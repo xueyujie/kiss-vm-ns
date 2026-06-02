@@ -135,7 +135,7 @@ _vm()
                 fi
             fi
             ;;
-        rm|del|delete|stop|autos*|noautos*|start|stat|blk*|srcfiles|homedir|iflist|ifl*)
+        rm|del|delete|autos*|noautos*|start|stat|blk*|srcfiles|homedir|iflist|ifl*)
             vmlist=$(virsh list --all --name 2>/dev/null)
             COMPREPLY=( $( compgen -W "$vmlist" -- "$cur" ) )
             ;;
@@ -259,9 +259,13 @@ _vm()
                 fi
             fi
             ;;
+        stop)
+            vmlist=$(virsh list --name --state-running 2>/dev/null)
+            COMPREPLY=( $( compgen -W "$vmlist" -- "$cur" ) )
+            ;;
         cpfrom)
             if [[ $narg -le 3 ]]; then
-                vmlist=$(virsh list --name 2>/dev/null)
+                vmlist=$(virsh list --name --state-running 2>/dev/null)
                 COMPREPLY=( $( compgen -W "$vmlist" -- "$cur" ) )
             elif [[ $narg -le 4 ]]; then
                 COMPREPLY=( $( compgen -W "# #<file-or-dir-in-vm>" -- "$cur" ) )
@@ -272,7 +276,7 @@ _vm()
             ;;
         cpto)
             if [[ $narg -le 3 ]]; then
-                vmlist=$(virsh list --name 2>/dev/null)
+                vmlist=$(virsh list --name --state-running 2>/dev/null)
                 COMPREPLY=( $( compgen -W "$vmlist" -- "$cur" ) )
             else
                 #COMPREPLY=( $( compgen -A file -- "$cur" ) )

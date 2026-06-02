@@ -2829,7 +2829,7 @@ else
 		[[ -z "$SPECIFIED_VIDEO" ]] && VIDEO_OPT="--video=virtio"
 		;;
 	(loongarch*)
-		#seems --video=virtio doesn't work on fedora-44/qemu-system-loongarch64
+		#--video=virtio works, but will get "display out is not active" for a while in some hosts
 		[[ -z "$SPECIFIED_VIDEO" ]] && VIDEO_OPT="--video=vga"
 		;;
 	(riscv*)

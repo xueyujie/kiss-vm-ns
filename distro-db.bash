@@ -4,6 +4,9 @@ GuestARCH=${GuestARCH:-$(uname -m)}
 _GuestARCH=${GuestARCH}; [[ "$GuestARCH" = ppc64 ]] && _GuestARCH=ppc64le;
 Country=$(timeout 2 curl -s ipinfo.io/country)
 
+_arch=${GuestARCH}
+case $_arch in (x86_64) _arch=amd64;; (aarch64) _arch=arm64;; esac
+
 #### CentOS stream and CentOS
 distroInfo[Alma-10]="https://repo.almalinux.org/almalinux/10/cloud/$_GuestARCH/images/AlmaLinux-10-GenericCloud-latest.$_GuestARCH.qcow2 https://repo.almalinux.org/almalinux/10/BaseOS/$_GuestARCH/os/"
 distroInfo[Alma-9]="https://repo.almalinux.org/almalinux/9/cloud/$_GuestARCH/images/AlmaLinux-9-GenericCloud-latest.$_GuestARCH.qcow2 https://repo.almalinux.org/almalinux/9/BaseOS/$_GuestARCH/os/"
@@ -33,13 +36,13 @@ distroInfo[frawhide]="https://dl.fedoraproject.org/pub/fedora/linux/development/
 distroInfo[debian-13]="https://cloud.debian.org/images/cloud/trixie/latest/"
 distroInfo[debian-12]="http://cloud.debian.org/images/cloud/bookworm/latest/"
 distroInfo[debian-11]="http://cloud.debian.org/images/cloud/bullseye/latest/"
-distroInfo[debian-10]="https://cloud.debian.org/images/openstack/current-10/debian-10-openstack-${GuestARCH/x86_64/amd64}.qcow2"
-distroInfo[debian-9]="https://cloud.debian.org/images/openstack/current-9/debian-9-openstack-${GuestARCH/x86_64/amd64}.qcow2"
+distroInfo[debian-10]="https://cloud.debian.org/images/openstack/current-10/debian-10-openstack-${_arch}.qcow2"
+distroInfo[debian-9]="https://cloud.debian.org/images/openstack/current-9/debian-9-openstack-${_arch}.qcow2"
 lyy=$(date +%y -d '-1year'); llyy=$(date +%y -d '-2year'); read yy MM < <(date +%y\ %m); uvers=()
 if [[ ${MM#0} -gt 10 ]]; then uvers+=(${yy}.{10,04}); elif [[ ${MM#0} -gt 4 ]]; then uvers+=(${yy}.04); fi
 uvers+=(${lyy}.{10,04} ${llyy}.{10,04})
 for uver in ${uvers[@]}; do
-	distroInfo[ubuntu-${uver}]="https://cloud-images.ubuntu.com/releases/${uver}/release/ubuntu-${uver}-server-cloudimg-${GuestARCH/x86_64/amd64}.img"
+	distroInfo[ubuntu-${uver}]="https://cloud-images.ubuntu.com/releases/${uver}/release/ubuntu-${uver}-server-cloudimg-${_arch}.img"
 done
 
 #### OpenSUSE
@@ -50,14 +53,12 @@ distroInfo[openSUSE-leap-15.3]="https://download.opensuse.org/repositories/Cloud
 distroInfo[openSUSE-leap-15.2]="https://download.opensuse.org/repositories/Cloud:/Images:/Leap_15.2/images/openSUSE-Leap-15.2-OpenStack.$GuestARCH.qcow2"
 
 #### FreeBSD
-_arch=${GuestARCH}
-case $_arch in (x86_64) _arch=amd64;; esac
 _archfix=${_arch}
-case $_archfix in (aarch64) _archfix=arm64-aarch64;; esac
-distroInfo[FreeBSD-15.0]="https://download.freebsd.org/ftp/releases/VM-IMAGES/15.0-RELEASE/${_arch}/Latest/%%${GuestARCH/x86_64/amd64}-zfs.qcow2.xz"
-distroInfo[FreeBSD-14.4]="https://download.freebsd.org/ftp/releases/VM-IMAGES/14.4-RELEASE/${_arch}/Latest/%%${GuestARCH/x86_64/amd64}.qcow2.xz"
-distroInfo[FreeBSD-14.3]="https://download.freebsd.org/ftp/releases/VM-IMAGES/14.3-RELEASE/${_arch}/Latest/%%${GuestARCH/x86_64/amd64}.qcow2.xz"
-distroInfo[FreeBSD-13.5]="https://download.freebsd.org/ftp/releases/VM-IMAGES/13.5-RELEASE/${_arch}/Latest/%%${GuestARCH/x86_64/amd64}.qcow2.xz"
+case $_archfix in (aarch64|arm64) _archfix=arm64-aarch64;; esac
+distroInfo[FreeBSD-15.0]="https://download.freebsd.org/ftp/releases/VM-IMAGES/15.0-RELEASE/${_arch}/Latest/%%${_arch}-zfs.qcow2.xz"
+distroInfo[FreeBSD-14.4]="https://download.freebsd.org/ftp/releases/VM-IMAGES/14.4-RELEASE/${_arch}/Latest/%%${_arch}.qcow2.xz"
+distroInfo[FreeBSD-14.3]="https://download.freebsd.org/ftp/releases/VM-IMAGES/14.3-RELEASE/${_arch}/Latest/%%${_arch}.qcow2.xz"
+distroInfo[FreeBSD-13.5]="https://download.freebsd.org/ftp/releases/VM-IMAGES/13.5-RELEASE/${_arch}/Latest/%%${_arch}.qcow2.xz"
 
 #### ArchLinux
 distroInfo[archlinux]="https://geo.mirror.pkgbuild.com/images/latest/Arch-Linux-${GuestARCH}-cloudimg.qcow2"
@@ -96,10 +97,8 @@ CN|HK)
 	distroInfo[archlinux]="https://mirrors.bfsu.edu.cn/archlinux/images/latest/Arch-Linux-${GuestARCH}-cloudimg.qcow2"
 
 	#### FreeBSD
-	_arch=${GuestARCH}
-	case $_arch in (x86_64) _arch=amd64;; esac
 	_archfix=${_arch}
-	case $_archfix in (aarch64) _archfix=arm64-aarch64;; esac
+	case $_archfix in (aarch64|arm64) _archfix=arm64-aarch64;; esac
 	distroInfo[FreeBSD-15.0]="https://mirrors.aliyun.com/freebsd/releases/VM-IMAGES/15.0-RELEASE/${_arch}/Latest/FreeBSD-15.0-RELEASE-${_archfix}-zfs.qcow2.xz"
 	distroInfo[FreeBSD-14.4]="https://mirrors.aliyun.com/freebsd/releases/VM-IMAGES/14.4-RELEASE/${_arch}/Latest/FreeBSD-14.4-RELEASE-${_archfix}.qcow2.xz"
 	distroInfo[FreeBSD-14.3]="https://mirrors.aliyun.com/freebsd/releases/VM-IMAGES/14.3-RELEASE/${_arch}/Latest/FreeBSD-14.3-RELEASE-${_archfix}.qcow2.xz"

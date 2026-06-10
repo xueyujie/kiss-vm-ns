@@ -97,11 +97,13 @@ CN|HK)
 	distroInfo[archlinux]="https://mirrors.bfsu.edu.cn/archlinux/images/latest/Arch-Linux-${GuestARCH}-cloudimg.qcow2"
 
 	#### FreeBSD
+	cnbaseurl=https://mirrors.aliyun.com/freebsd/releases/VM-IMAGES
+	cnbaseurl=https://mirrors.ustc.edu.cn/freebsd/releases/VM-IMAGES
 	_archfix=${_arch}
 	case $_archfix in (aarch64|arm64) _archfix=arm64-aarch64;; esac
-	distroInfo[FreeBSD-15.0]="https://mirrors.aliyun.com/freebsd/releases/VM-IMAGES/15.0-RELEASE/${_arch}/Latest/FreeBSD-15.0-RELEASE-${_archfix}-zfs.qcow2.xz"
-	distroInfo[FreeBSD-14.4]="https://mirrors.aliyun.com/freebsd/releases/VM-IMAGES/14.4-RELEASE/${_arch}/Latest/FreeBSD-14.4-RELEASE-${_archfix}.qcow2.xz"
-	distroInfo[FreeBSD-14.3]="https://mirrors.aliyun.com/freebsd/releases/VM-IMAGES/14.3-RELEASE/${_arch}/Latest/FreeBSD-14.3-RELEASE-${_archfix}.qcow2.xz"
-	distroInfo[FreeBSD-13.5]="https://mirrors.aliyun.com/freebsd/releases/VM-IMAGES/13.5-RELEASE/${_arch}/Latest/FreeBSD-13.5-RELEASE-${_archfix}.qcow2.xz"
+	distroInfo[FreeBSD-15.0]="$cnbaseurl/15.0-RELEASE/${_arch/arm64/aarch64}/Latest/FreeBSD-15.0-RELEASE-${_archfix}-zfs.qcow2.xz"
+	distroInfo[FreeBSD-14.4]="$cnbaseurl/14.4-RELEASE/${_arch/arm64/aarch64}/Latest/FreeBSD-14.4-RELEASE-${_archfix}.qcow2.xz"
+	distroInfo[FreeBSD-14.3]="$cnbaseurl/14.3-RELEASE/${_arch/arm64/aarch64}/Latest/FreeBSD-14.3-RELEASE-${_archfix}.qcow2.xz"
+	distroInfo[FreeBSD-13.5]="$cnbaseurl/13.5-RELEASE/${_arch/arm64/aarch64}/Latest/FreeBSD-13.5-RELEASE-${_archfix}.qcow2.xz"
 	;;
 esac

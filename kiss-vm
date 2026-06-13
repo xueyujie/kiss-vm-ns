@@ -825,6 +825,13 @@ vmstat() {
 	done
 }
 
+vmeject() {
+	local _vmname=$(vmname_extract -all "$1")
+	local _dev=$2
+	[[ "$_dev" != */* ]] && _dev=$(vmhomedir $_vmname|head -1)/$_dev
+	run -debug virsh change-media $_vmname $_dev --eject
+}
+
 vmclone() {
 	[[ "$1" = /a ]] && {
 		shift
@@ -3091,6 +3098,7 @@ case "$vmsubcmd" in
 	rootdir)		vmrootdir "$@"; exit $?;;
 	homedir)		vmhomedir "$@"; exit $?;;
 	clone)			vmclone "$@"; exit $?;;
+	eject)			vmeject "$@"; exit $?;;
 	add.iso)		vmadd_iso "$@"; exit $?;;
 	add.disk)		vmadd_disk "$@"; exit $?;;
 	add.if)			vmadd_if "$@"; exit $?;;

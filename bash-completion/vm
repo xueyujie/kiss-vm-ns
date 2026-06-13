@@ -84,7 +84,7 @@ _vm()
     local netparams= netlist=
     _init_completion || return
 
-    subcommandList=(prepare enable-nested-vm help h create ls list clone port-available login console qmp monitor rm delete ifaddr iflist if.unplugin if.plugin viewer vncproc xml edit exec restart reboot stop start autostart noautostart stat blklist netls netcreate netinfo netdel netstart cpfrom cpto rootdir homedir add.iso add.disk add.if add.if.bridge add.if.direct add.if.passthru snapshot)
+    subcommandList=(prepare enable-nested-vm help h create ls list clone port-available login console qmp monitor rm delete ifaddr iflist if.unplugin if.plugin eject viewer vncproc xml edit exec restart reboot stop start autostart noautostart stat blklist netls netcreate netinfo netdel netstart cpfrom cpto rootdir homedir add.iso add.disk add.if add.if.bridge add.if.direct add.if.passthru snapshot)
 
     for ((i=0; i<${#words[@]}; i++)); do
         w=${words[$i]}
@@ -281,6 +281,18 @@ _vm()
             else
                 #COMPREPLY=( $( compgen -A file -- "$cur" ) )
                 _filedir
+            fi
+            ;;
+        eject)
+            if [[ $narg -le 3 ]]; then
+                vmlist=$(virsh list --name 2>/dev/null)
+                COMPREPLY=( $( compgen -W "$vmlist" -- "$cur" ) )
+            else
+                #COMPREPLY=( $( compgen -A file -- "$cur" ) )
+                _path=$(vm homedir $prev|head -1)
+                pushd $_path &>/dev/null
+                _filedir iso qcow2 raw image img
+                popd &>/dev/null
             fi
             ;;
         lo|log|log*)

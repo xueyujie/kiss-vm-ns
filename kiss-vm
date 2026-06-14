@@ -4530,7 +4530,7 @@ elif [[ "$InstallType" = pxe ]]; then
 				echo -e "\n{VM:INFO} vncwait $_pattern ..."
 				vm vnc $vmname -get
 				for ((i=0; i<${_timo:-60}; i++)) do
-					sleep 1; vm vnc "$vmname" -get | GREP_COLORS='ms=01;30;46' grep -i --color "$_pattern" && break
+					sleep 1; vm vnc "$vmname" -get | GREP_COLORS='ms=01;30;46' grep -Ei --color "$_pattern" && break
 				done && for _send in $_msgs; do vm vnc "$vmname" -put "$_send"; done
 				sleep 2
 			done
@@ -4775,13 +4775,17 @@ elif [[ "$InstallType" = cdrom_image ]]; then
 		done'
 	fi
 
-	if [[ -n "${VNCWAIT_AFTER_INSTALL[*]}" ]]; then
+	if [[ "$NOAUTO" = yes ]]; then
+		echo -e "{VM:INFO} waiting pxe boot/menu: prompt ..."
+		for ((i=0; i<60; i++)) do grep -Ei "........" < <(vm vnc "$vmname" -get) && break; sleep 1; done
+		vm vnc $vmname -put=key:tab -put=key:esc
+	elif [[ -n "${VNCWAIT_AFTER_INSTALL[*]}" ]]; then
 		for pat_msg_timo in "${VNCWAIT_AFTER_INSTALL[@]}"; do
 			IFS=, read _pattern _msgs _timo <<<"${pat_msg_timo}"
 			echo -e "\n{VM:INFO} vncwait $_pattern ..."
 			vm vnc $vmname -get
 			for ((i=0; i<${_timo:-60}; i++)) do
-				sleep 1; vm vnc "$vmname" -get | GREP_COLORS='ms=01;30;46' grep -i --color "$_pattern" && break
+				sleep 1; vm vnc "$vmname" -get | GREP_COLORS='ms=01;30;46' grep -Ei --color "$_pattern" && break
 			done && for _send in $_msgs; do vm vnc "$vmname" -put "$_send"; done
 			sleep 2
 		done
